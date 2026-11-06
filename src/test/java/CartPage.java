@@ -1,7 +1,10 @@
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.List;
 
 public class CartPage {
@@ -10,6 +13,13 @@ public class CartPage {
 
     public CartPage(WebDriver driver) {
         this.driver = driver;
+    }
+
+    public WebDriverWait waiting() {
+        return new WebDriverWait(
+                driver,
+                Duration.ofSeconds(10)
+        );
     }
 
     public By goToCartPage() {
@@ -72,4 +82,10 @@ public class CartPage {
 
         return items.size();
     }
+
+    public void waitForVisibility(By locator) {
+        waiting().until(
+                ExpectedConditions.visibilityOfElementLocated(locator));
+    }
+
 }

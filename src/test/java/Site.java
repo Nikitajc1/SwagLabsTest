@@ -3,6 +3,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.openqa.selenium.WebDriver;
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -205,6 +207,7 @@ public class Site {
 
         assertEquals(expected, actual);
 
+        assertEquals(actual.getFirst(), inventory.highestPrice(actual));
     }
 
     @ParameterizedTest
@@ -252,6 +255,37 @@ public class Site {
 
         assertEquals(0, cart.getNumberOfItems());
 
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "0, Sauce Labs Backpack",
+            "1, Sauce Labs Bike Light"
+    })
+    void checkNames(int index, String name) {
+        login.successLoginUser();
+
+        inventory.addTwoItemsInCart();
+        cart.openCartPage();
+        inventory.waiting().until(
+                ExpectedConditions.numberOfElementsToBe(cart.itemNames(), 2)
+        );
+
+        List<WebElement> names = cart.nameFields();
+
+        assertEquals(name, names.get(index).getText());
+    }
+
+    @Test
+    void updateCart() {
+        login.successLoginUser();
+        inventory.addingBackpack();
+        cart.openCartPage();
+
+        driver.navigate().refresh();
+        cart.waitForVisibility(cart.itemNames());
+
+        assertEquals(info.getBackpackName(), cart.getItemName());
     }
 }
 

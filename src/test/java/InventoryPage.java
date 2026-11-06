@@ -5,6 +5,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class InventoryPage {
@@ -136,6 +137,13 @@ public class InventoryPage {
         return numericPrices;
     }
 
+    public Double highestPrice(List<Double> prices) {
+
+        return prices
+                .stream()
+                .max(Double::compareTo)
+                .orElseThrow();
+    }
 
     public List<String> getNames() {
         return driver
@@ -149,6 +157,5 @@ public class InventoryPage {
         return
                 driver.getCurrentUrl().contains(info.getInventoryURL());
     }
-
 
 }

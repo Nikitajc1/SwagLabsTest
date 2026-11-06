@@ -34,6 +34,7 @@ public class Info {
     private final String cartItem = "cart_item";
     private final String numberOfItems = "//div[@class='cart_item']";
     private final Double priceOfBackpack = 29.99;
+    private final String shirtName = "Sauce Labs Bolt T-Shirt";
 
     public String getSite() {
         return siteName;
@@ -115,5 +116,9 @@ public class Info {
 
     public Double getPriceOfBackpack() {
         return priceOfBackpack;
+    }
+
+    public String getShirtName() {
+        return shirtName;
     }
 }
