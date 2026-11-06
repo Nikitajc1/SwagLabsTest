@@ -1,14 +1,9 @@
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-
 import static org.junit.jupiter.api.Assertions.*;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -20,12 +15,11 @@ public class Site {
     private LoginPage login;
     private InventoryPage inventory;
     private CartPage cart;
-    private final By itemNames = By.className(info.getInventoryNameField());
+    private final SetDriver settings = new SetDriver();
 
 
     @BeforeEach
     public void setUp() {
-        SetDriver settings = new SetDriver();
         driver = settings.setDriver();
 
         login = new LoginPage(driver);
@@ -40,21 +34,13 @@ public class Site {
         }
     }
 
-    public WebDriverWait waiting() {
-        return new WebDriverWait(
-                driver,
-                Duration.ofSeconds(10)
-        );
-    }
-
-
     @Test
     public void login() {
 
             login.successLoginUser();
 
             assertTrue(
-                    driver.getCurrentUrl().contains(info.getInventoryURL())
+                    inventory.isInventoryPageOpened()
             );
         }
 
@@ -66,37 +52,26 @@ public class Site {
 
             inventory.addingBackpack();
 
-            waiting().until(ExpectedConditions.visibilityOfElementLocated(cart.cartButtonClassName()));
+            inventory.waitForVisibility(cart.cartButtonClassName());
 
             assertAll(
-                    () -> assertTrue(driver.findElement(By.id(info.getRemoveBackpackButton()))
+                    () -> assertTrue(inventory.findRemoveForBackpack()
                             .isDisplayed()),
 
-                    () -> assertTrue(driver.findElement(cart.cartButtonClassName())
+                    () -> assertTrue(cart.findCartButton()
                         .isDisplayed()),
 
-                    () -> assertTrue(driver.findElement(cart.cartButtonClassName())
-                    .getAttribute(info.getAriaLabel()).contentEquals(info.getOneItemInCart()))
+                    () -> assertEquals(info.getOneItemInCart(), cart.findCartButton()
+                            .getAttribute(info.getAriaLabel()))
             );
 
             cart.openCartPage();
 
             assertTrue(cart.isCartPageOpened());
 
-            waiting().until(ExpectedConditions.visibilityOfElementLocated(itemNames));
+            inventory.waitForVisibility(inventory.itemNames());
 
-            waiting().until(ExpectedConditions.elementToBeClickable(itemNames));
-
-            assertTrue(driver
-                    .findElement(itemNames)
-                    .getText().contentEquals(info.getBackpackName()));
-
-            String expected = info.getBikeLightName();
-            String actual = driver
-                    .findElement(itemNames)
-                    .getText();
-
-            assertNotEquals(expected, actual);
+            assertEquals(info.getBackpackName(), inventory.findNameField().getText());
 
     }
 
@@ -111,34 +86,41 @@ public class Site {
 
         assertTrue(cart.isCartPageOpened());
 
-        waiting().until(
-                ExpectedConditions.visibilityOfElementLocated(inventory.removeBackpackFromCart())
-        );
+        inventory.waitForVisibility(inventory.removeBackpackFromCart());
 
-        waiting().until(
-                ExpectedConditions.elementToBeClickable(inventory.removeBackpackFromCart())
-        );
+        inventory.waitForClickable(inventory.removeBackpackFromCart());
 
         inventory.removingBackpack();
 
-        waiting().until(ExpectedConditions.attributeContains(
-                cart.cartButtonClassName(),
-                info.getAriaLabel(),
-                info.getEmptyCart()
-        ));
-
-        waiting().until(ExpectedConditions.invisibilityOfElementLocated(
+        inventory.waitForElementDisappear(
                 inventory.removeBackpackFromCart()
-        ));
+        );
 
-        assertTrue(driver.findElement(cart.cartButtonClassName())
+        inventory.waitForElementDisappear(
+                cart.cartBadge()
+        );
+
+        assertTrue(cart.findCartButton()
                 .getAttribute(info.getAriaLabel())
                 .contains(info.getEmptyCart()));
+
+        assertEquals(0, cart.getNumberOfItems());
     }
 
     @Test
     public void addTwoItemsInCart() {
         inventory.addTwoItemsInCart();
+
+        assertAll(
+                () -> assertTrue(cart.nameFields()
+                        .get(0).getText().contains(info.getBackpackName())),
+                () -> assertTrue(cart.nameFields()
+                        .get(1).getText().contains(info.getBikeLightName())),
+                () ->assertTrue(cart.findCartButton()
+                        .getAttribute(info.getAriaLabel())
+                        .contentEquals(info.getTwoItemsInCart())),
+                () -> assertEquals(2, cart.getNumberOfItems())
+        );
     }
 
     @Test
@@ -148,52 +130,60 @@ public class Site {
 
         inventory.removingBikeLight();
 
-        waiting().until(ExpectedConditions
-                .invisibilityOfElementLocated(inventory.removeBikeLight()));
-        waiting().until(ExpectedConditions
-                .numberOfElementsToBe(itemNames, 1));
+        inventory.waitForElementDisappear(inventory.removeBikeLight());
+        inventory.waiting().until(ExpectedConditions
+                .numberOfElementsToBe(inventory.itemNames(), 1));
 
-        assertTrue(driver.findElement(itemNames).getText().contentEquals(info.getBackpackName()));
-
+        assertEquals(info.getBackpackName(), inventory.findNameField().getText());
     }
 
     @Test
-    public void sortingItemsByName() {
+    public void sortingItemsByNameZtoA() {
 
         login.successLoginUser();
+
+        List<String> first = inventory.getNames();
+
+        List<String> expected = new ArrayList<>(first);
+        expected.sort(Comparator.reverseOrder());
 
         inventory.sortingZtoA();
 
         List<String> actual = inventory.getNames();
 
-        List<String> expected = new ArrayList<>(actual);
-        expected.sort(Comparator.reverseOrder());
-
-        inventory.sortingAtoZ();
-
-        List<String> actual2 = inventory.getNames();
-
-        List<String> expected2 = new ArrayList<>(actual2);
-        expected2.sort(Comparator.naturalOrder());
-
-        assertAll(
-                () -> assertEquals(expected, actual),
-                () -> assertEquals(expected2, actual2)
-        );
+        assertEquals(expected, actual);
 
     }
 
+    @Test
+    public void sortingItemsByNameAtoZ() {
+        login.successLoginUser();
+
+        List<String> first = inventory.getNames();
+
+        List<String> expected = new ArrayList<>(first);
+        expected.sort(Comparator.naturalOrder());
+
+        inventory.sortingAtoZ();
+
+        List<String> actual = inventory.getNames();
+
+        assertEquals(expected, actual);
+    }
+;
     @Test
     public void sortingItemsByPriceLoHi() {
 
         login.successLoginUser();
 
+        List<Double> first = inventory.getPrices();
+
+        List<Double> expected = new ArrayList<>(first);
+        expected.sort(Comparator.naturalOrder());
+
         inventory.sortingLoHi();
 
         List<Double> actual = inventory.getPrices();
-
-        List<Double> expected = new ArrayList<>(actual);
-        expected.sort(Comparator.naturalOrder());
 
         assertEquals(expected, actual);
 
@@ -204,12 +194,14 @@ public class Site {
 
         login.successLoginUser();
 
+        List<Double> first = inventory.getPrices();
+
+        List<Double> expected = new ArrayList<>(first);
+        expected.sort(Comparator.reverseOrder());
+
         inventory.sortingHiLo();
 
         List<Double> actual = inventory.getPrices();
-
-        List<Double> expected = new ArrayList<>(actual);
-        expected.sort(Comparator.reverseOrder());
 
         assertEquals(expected, actual);
 
@@ -224,8 +216,42 @@ public class Site {
     void failLogin(String username, String password, String error) {
         login.failedLogin(username, password);
 
-        assertTrue(driver.findElement(By.xpath(info.getErrorXpath())).isDisplayed());
-        assertEquals(error, login.getErrorText());
+        login.waitForError();
+
+        assertAll(
+                () -> assertTrue(login.findErrorLogin().isDisplayed()),
+                () -> assertEquals(error, login.getErrorText())
+        );
+    }
+
+    @Test
+    void userPath() {
+        login.successLoginUser();
+
+        inventory.addingBackpack();
+
+        cart.openCartPage();
+
+        inventory.waitForVisibility(inventory.itemNames());
+
+        assertAll(
+                () -> assertEquals(info.getBackpackName(), cart.getItemName()),
+                () -> assertEquals(info.getPriceOfBackpack(), cart.getPrice()),
+                () -> assertEquals(1, cart.getNumberOfItems())
+        );
+
+        inventory.removingBackpack();
+
+        inventory.waitForElementDisappear(
+                inventory.removeBackpackFromCart()
+        );
+
+        inventory.waitForElementDisappear(
+                cart.cartBadge()
+        );
+
+        assertEquals(0, cart.getNumberOfItems());
+
     }
 }
 

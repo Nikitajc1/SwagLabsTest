@@ -1,5 +1,6 @@
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
@@ -12,6 +13,13 @@ public class LoginPage {
 
     public LoginPage(WebDriver driver) {
         this.driver = driver;
+    }
+
+    public WebDriverWait waiting() {
+        return new WebDriverWait(
+                driver,
+                Duration.ofSeconds(10)
+        );
     }
 
     public void successLoginUser() {
@@ -45,5 +53,18 @@ public class LoginPage {
         return driver.findElement(errorLoginXpath).getText();
     }
 
+    public By xpathOfErrorLogin() {
+        return By.xpath(info.getErrorXpath());
+    }
+
+    public WebElement findErrorLogin() {
+        return driver.findElement(xpathOfErrorLogin());
+    }
+
+    public void waitForError() {
+        waiting().until(
+                ExpectedConditions.visibilityOfElementLocated(xpathOfErrorLogin())
+        );
+    }
 
 }

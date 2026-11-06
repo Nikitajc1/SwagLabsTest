@@ -2,7 +2,6 @@ public class Info {
     private final String siteName = "https://www.saucedemo.com/";
     private final String loginField = "user-name";
     private final String userName = "standard_user";
-    private final String failName = "asd";
     private final String passField = "password";
     private final String passValue = "secret_sauce";
     private final String loginButton = "login-button";
@@ -21,16 +20,20 @@ public class Info {
     private final String bikeLightName = "Sauce Labs Bike Light";
     private final String bikeLightAddButton = "add-to-cart-sauce-labs-bike-light";
     private final String removeBikeLight = "remove-sauce-labs-bike-light";
-    private final String sortingAtoZ = "//select[@class='product_sort_container']/option[@value='az']";
-    private final String sortingZtoA = "//select[@class='product_sort_container']/option[@value='za']";
-    private final String sortingLoHi = "//select[@class='product_sort_container']/option[@value='lohi']";
-    private final String sortingHiLo = "//select[@class='product_sort_container']/option[@value='hilo']";
+    private final String sortingAtoZ =
+            "//select[@class='product_sort_container']/option[@value='az']";
+    private final String sortingZtoA =
+            "//select[@class='product_sort_container']/option[@value='za']";
+    private final String sortingLoHi =
+            "//select[@class='product_sort_container']/option[@value='lohi']";
+    private final String sortingHiLo =
+            "//select[@class='product_sort_container']/option[@value='hilo']";
     private final String inventoryNameList = "//div[@class='inventory_item_name ']";
-    private final String tShirtName = "Test.allTheThings() T-Shirt (Red)";
     private final String inventoryPriceList = "//div[@class='inventory_item_price']";
-    private final String lowestPrice = "$7.99";
-    private final String highestPrice = "$49.99";
-    private final String errorLoginText = "Epic sadface: Username and password do not match any user in this service";
+    private final String cartBadge = "shopping_cart_badge";
+    private final String cartItem = "cart_item";
+    private final String numberOfItems = "//div[@class='cart_item']";
+    private final Double priceOfBackpack = 29.99;
 
     public String getSite() {
         return siteName;
@@ -63,7 +66,6 @@ public class Info {
     public String getInventoryURL() {return inventoryURL;}
     public String getAriaLabel() {return ariaLabel;}
     public String getBackpackName() {return backpackName;}
-    public String getFailName() {return failName;}
     public String getErrorXpath() {return errorXpath;}
     public String getRemoveBackpackButton() {return removeButtonForBackpack;}
     public String getOneItemInCart() {return oneItemInCart;}
@@ -95,23 +97,23 @@ public class Info {
         return inventoryNameList;
     }
 
-    public String gettShirtName() {
-        return tShirtName;
-    }
-
     public String getInventoryPriceList() {
         return inventoryPriceList;
     }
 
-    public String getLowestPrice() {
-        return lowestPrice;
+    public String getCartBadge() {
+        return cartBadge;
     }
 
-    public String getHighestPrice() {
-        return highestPrice;
+    public String getCartItem() {
+        return cartItem;
     }
 
-    public String getErrorLoginText() {
-        return errorLoginText;
+    public String getNumberOfItems() {
+        return numberOfItems;
+    }
+
+    public Double getPriceOfBackpack() {
+        return priceOfBackpack;
     }
 }
