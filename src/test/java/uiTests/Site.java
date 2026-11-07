@@ -1,14 +1,18 @@
+package uiTests;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.openqa.selenium.WebDriver;
 import static org.junit.jupiter.api.Assertions.*;
-
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import uiHelpers.Info;
+import uiHelpers.InventoryPage;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import uiHelpers.InventoryPage.*;
+import uiHelpers.*;
 
 public class Site {
 
@@ -60,20 +64,20 @@ public class Site {
                     () -> assertTrue(inventory.findRemoveForBackpack()
                             .isDisplayed()),
 
-                    () -> assertTrue(cart.findCartButton()
+                    () -> Assertions.assertTrue(cart.findCartButton()
                         .isDisplayed()),
 
-                    () -> assertEquals(info.getOneItemInCart(), cart.findCartButton()
+                    () -> Assertions.assertEquals(info.getOneItemInCart(), cart.findCartButton()
                             .getAttribute(info.getAriaLabel()))
             );
 
             cart.openCartPage();
 
-            assertTrue(cart.isCartPageOpened());
+            Assertions.assertTrue(cart.isCartPageOpened());
 
             inventory.waitForVisibility(inventory.itemNames());
 
-            assertEquals(info.getBackpackName(), inventory.findNameField().getText());
+            Assertions.assertEquals(info.getBackpackName(), inventory.findNameField().getText());
 
     }
 
@@ -86,7 +90,7 @@ public class Site {
 
         cart.openCartPage();
 
-        assertTrue(cart.isCartPageOpened());
+        Assertions.assertTrue(cart.isCartPageOpened());
 
         inventory.waitForVisibility(inventory.removeBackpackFromCart());
 
@@ -102,11 +106,11 @@ public class Site {
                 cart.cartBadge()
         );
 
-        assertTrue(cart.findCartButton()
+        Assertions.assertTrue(cart.findCartButton()
                 .getAttribute(info.getAriaLabel())
                 .contains(info.getEmptyCart()));
 
-        assertEquals(0, cart.getNumberOfItems());
+        Assertions.assertEquals(0, cart.getNumberOfItems());
     }
 
     @Test
@@ -114,14 +118,14 @@ public class Site {
         inventory.addTwoItemsInCart();
 
         assertAll(
-                () -> assertTrue(cart.nameFields()
+                () -> Assertions.assertTrue(cart.nameFields()
                         .get(0).getText().contains(info.getBackpackName())),
-                () -> assertTrue(cart.nameFields()
+                () -> Assertions.assertTrue(cart.nameFields()
                         .get(1).getText().contains(info.getBikeLightName())),
-                () ->assertTrue(cart.findCartButton()
+                () -> Assertions.assertTrue(cart.findCartButton()
                         .getAttribute(info.getAriaLabel())
                         .contentEquals(info.getTwoItemsInCart())),
-                () -> assertEquals(2, cart.getNumberOfItems())
+                () -> Assertions.assertEquals(2, cart.getNumberOfItems())
         );
     }
 
@@ -136,7 +140,7 @@ public class Site {
         inventory.waiting().until(ExpectedConditions
                 .numberOfElementsToBe(inventory.itemNames(), 1));
 
-        assertEquals(info.getBackpackName(), inventory.findNameField().getText());
+        Assertions.assertEquals(info.getBackpackName(), inventory.findNameField().getText());
     }
 
     @Test
@@ -222,8 +226,8 @@ public class Site {
         login.waitForError();
 
         assertAll(
-                () -> assertTrue(login.findErrorLogin().isDisplayed()),
-                () -> assertEquals(error, login.getErrorText())
+                () -> Assertions.assertTrue(login.findErrorLogin().isDisplayed()),
+                () -> Assertions.assertEquals(error, login.getErrorText())
         );
     }
 
@@ -238,9 +242,9 @@ public class Site {
         inventory.waitForVisibility(inventory.itemNames());
 
         assertAll(
-                () -> assertEquals(info.getBackpackName(), cart.getItemName()),
-                () -> assertEquals(info.getPriceOfBackpack(), cart.getPrice()),
-                () -> assertEquals(1, cart.getNumberOfItems())
+                () -> Assertions.assertEquals(info.getBackpackName(), cart.getItemName()),
+                () -> Assertions.assertEquals(info.getPriceOfBackpack(), cart.getPrice()),
+                () -> Assertions.assertEquals(1, cart.getNumberOfItems())
         );
 
         inventory.removingBackpack();
@@ -253,7 +257,7 @@ public class Site {
                 cart.cartBadge()
         );
 
-        assertEquals(0, cart.getNumberOfItems());
+        Assertions.assertEquals(0, cart.getNumberOfItems());
 
     }
 
@@ -285,7 +289,7 @@ public class Site {
         driver.navigate().refresh();
         cart.waitForVisibility(cart.itemNames());
 
-        assertEquals(info.getBackpackName(), cart.getItemName());
+        Assertions.assertEquals(info.getBackpackName(), cart.getItemName());
     }
 }
 

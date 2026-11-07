@@ -1,3 +1,5 @@
+package uiHelpers;
+
 public class Info {
     private final String siteName = "https://www.saucedemo.com/";
     private final String loginField = "user-name";
