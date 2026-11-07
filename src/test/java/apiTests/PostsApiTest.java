@@ -2,6 +2,7 @@ package apiTests;
 
 import apiHelpers.ApiHelp;
 import apiHelpers.InfoApi;
+import io.opentelemetry.exporter.logging.SystemOutLogRecordExporter;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
@@ -19,19 +20,20 @@ public class PostsApiTest {
 
     @Test
     void getPostById200() {
-        help.getPost()
+        help.getPostByPath(1)
                 .then()
                 .statusCode(200)
                 .body("userId", equalTo(1))
                 .body("id", equalTo(1))
                 .body("body", notNullValue())
                 .body("body", not(emptyString()))
-                .body("title", not(emptyString()));
+                .body("title", not(emptyString()))
+                .body("title", equalTo(info.getTitleOfPost1()));
     }
 
     @Test
     void getResponseOfPost() {
-        Response response = help.getPost()
+        Response response = help.getPostByPath(1)
                 .then()
                 .extract().response();
 
@@ -60,5 +62,38 @@ public class PostsApiTest {
         assertAll(
                 () -> assertEquals(101, id)
         );
+    }
+
+    @Test
+    void getPostByPathParam() {
+        help.getPostByPath(5)
+                .then()
+                .statusCode(200)
+                .body("userId", equalTo(1))
+                .body("id", equalTo(5))
+                .body("body", notNullValue())
+                .body("body", not(emptyString()))
+                .body("title", not(emptyString()))
+                .body("title", equalTo(info.getTitleOfPost5()));
+    }
+
+    @Test
+    void getPostsOfUser() {
+        help.getPostOfUserFromAllPosts(2)
+                .then()
+                .statusCode(200)
+                .body("userId", everyItem(equalTo(2)));
+    }
+
+    @Test
+    void getFiltratedPost() {
+        help.getPostByTwoQuery(1, 5)
+                .then()
+                .statusCode(200)
+                .log().all()
+                .body("[0].userId", equalTo(1))
+                .body("[0].id", equalTo(5))
+                .body("[0].title", equalTo(info.getTitleOfPost5()))
+                .body("[0].body", equalTo(info.getBodyOfPost5()));
     }
 }

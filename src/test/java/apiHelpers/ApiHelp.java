@@ -86,11 +86,29 @@ public class ApiHelp {
                         """);
     }
 
-    public Response getPost() {
+    public Response getPostByPath(int id) {
         return given()
                 .spec(info.getPlaceholderSpec())
+                .pathParam("id", id)
                 .when()
-                .get("/posts/1");
+                .get("/posts/{id}");
+    }
+
+    public Response getPostOfUserFromAllPosts(int userId) {
+        return given()
+                .spec(info.getPlaceholderSpec())
+                .queryParam("userId", userId)
+                .when()
+                .get("/posts");
+    }
+
+    public Response getPostByTwoQuery(int userId, int id) {
+        return given()
+                .spec(info.getPlaceholderSpec())
+                .queryParam("userId", userId)
+                .queryParam("id", id)
+                .when()
+                .get("/posts");
     }
 
     public Response makePost() {

@@ -10,6 +10,8 @@ public class InfoApi {
     private final String testTitle = "First create";
     private final String bookingURI = "https://restful-booker.herokuapp.com";
     private final String placeholderURI = "https://jsonplaceholder.typicode.com/";
+    private final String titleOfPost5 ="nesciunt quas odio";
+    private final String bodyOfPost5 = "repudiandae veniam quaerat sunt sed\nalias aut fugiat sit autem sed est\nvoluptatem omnis possimus esse voluptatibus quis\nest aut tenetur dolor neque";
 
     private final RequestSpecification bookingSpec =
             new RequestSpecBuilder()
@@ -48,5 +50,13 @@ public class InfoApi {
 
     public String getPlaceholderURI() {
         return placeholderURI;
+    }
+
+    public String getTitleOfPost5() {
+        return titleOfPost5;
+    }
+
+    public String getBodyOfPost5() {
+        return bodyOfPost5;
     }
 }
