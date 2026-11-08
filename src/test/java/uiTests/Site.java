@@ -64,20 +64,20 @@ public class Site {
                     () -> assertTrue(inventory.findRemoveForBackpack()
                             .isDisplayed()),
 
-                    () -> Assertions.assertTrue(cart.findCartButton()
+                    () -> assertTrue(cart.findCartButton()
                         .isDisplayed()),
 
-                    () -> Assertions.assertEquals(info.getOneItemInCart(), cart.findCartButton()
+                    () -> assertEquals(info.getOneItemInCart(), cart.findCartButton()
                             .getAttribute(info.getAriaLabel()))
             );
 
             cart.openCartPage();
 
-            Assertions.assertTrue(cart.isCartPageOpened());
+            assertTrue(cart.isCartPageOpened());
 
             inventory.waitForVisibility(inventory.itemNames());
 
-            Assertions.assertEquals(info.getBackpackName(), inventory.findNameField().getText());
+            assertEquals(info.getBackpackName(), inventory.findNameField().getText());
 
     }
 

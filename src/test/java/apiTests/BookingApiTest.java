@@ -1,4 +1,5 @@
 package apiTests;
+
 import apiHelpers.ApiHelp;
 import apiHelpers.InfoApi;
 import models.Booking;
@@ -8,11 +9,11 @@ import models.BookingResponseData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.devtools.latest.network.model.Response;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 
 public class BookingApiTest {
     private final InfoApi info = new InfoApi();
@@ -28,7 +29,7 @@ public class BookingApiTest {
 
     @AfterEach
     void tearDown() {
-        if (bookingID != null){
+        if (bookingID != null) {
             given()
                     .spec(info.getBookingSpec())
                     .cookie("token", token)
@@ -46,15 +47,16 @@ public class BookingApiTest {
                 .when().get("/booking/" + bookingID)
                 .then()
                 .statusCode(200)
+                .body(matchesJsonSchemaInClasspath("schemas/booking-schema.json"))
                 .body("firstname", equalTo("Nikita"));
     }
 
     @Test
     void putBooking() {
 
-                help.bodyForPut()
-                        .cookie("token", token)
-                        .when().put("/booking/" + bookingID)
+        help.bodyForPut()
+                .cookie("token", token)
+                .when().put("/booking/" + bookingID)
                 .then()
                 .statusCode(200)
                 .body("firstname", allOf(
@@ -135,15 +137,7 @@ public class BookingApiTest {
 
     @Test
     void createAndDeserializeBooking() {
-        BookingDates testDates = new BookingDates("2026-11-10", "2026-11-15");
-        Booking testObject = new Booking(
-                "Nikita",
-                "Test",
-                150,
-                true,
-                testDates,
-                "Breakfast"
-        );
+        Booking testObject = help.createBooking();
 
         BookingResponse response = given()
                 .spec(info.getBookingSpec())
@@ -169,6 +163,49 @@ public class BookingApiTest {
                 () -> assertEquals("Breakfast", booking.getAdditionalneeds()),
                 () -> assertNotNull(response.getBooking()),
                 () -> assertNotNull(response.getBooking().getBookingdates())
+        );
+    }
+
+    @Test
+    void putBookingWithPojo() {
+        Booking testObject = help.createBooking();
+
+        BookingResponse response = given()
+                .spec(info.getBookingSpec())
+                .body(testObject)
+                .when().post("/booking")
+                .then()
+                .statusCode(200)
+                .extract()
+                .as(BookingResponse.class);
+
+        bookingID = response.getBookingid();
+
+        Booking updatedObject = help.uptadedBooking();
+
+        BookingResponseData booking = given()
+                .spec(info.getBookingSpec())
+                .cookie("token", token)
+                .body(updatedObject)
+                .when().put("/booking/" + bookingID)
+                .then()
+                .statusCode(200)
+                .extract()
+                .as(BookingResponseData.class);
+
+        assertAll(
+                () -> assertEquals(250, booking.getTotalprice()),
+                () -> assertFalse(booking.isDepositpaid()),
+                () -> assertEquals("Updated", booking.getFirstname()),
+                () -> assertEquals("User", booking.getLastname()),
+                () -> assertTrue(response.getBookingid() > 0),
+                () -> assertEquals("2026-12-01", booking
+                        .getBookingdates().getCheckin()),
+                () -> assertEquals("2026-12-05", booking
+                        .getBookingdates().getCheckout()),
+                () -> assertEquals("Dinner", booking.getAdditionalneeds()),
+                () -> assertNotNull(booking),
+                () -> assertNotNull(booking.getBookingdates())
         );
     }
 

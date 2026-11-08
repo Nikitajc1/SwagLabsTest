@@ -3,6 +3,9 @@ package apiHelpers;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import models.Booking;
+import models.BookingDates;
+
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
@@ -20,12 +23,40 @@ public class ApiHelp {
                         """);
     }
 
+    public RequestSpecification bodyForFakeAuth() {
+        return given()
+                .spec(info.getBookingSpec())
+                .body("""
+                        {
+                        "username": "admin",
+                        "password": "password1231232131231231231"
+                        }
+                        """);
+    }
+
     public RequestSpecification bodyForPost() {
         return given()
                 .spec(info.getBookingSpec())
                 .body("""
                         {
                         "firstname": "Nikita",
+                        "lastname": "QA",
+                        "totalprice": 100,
+                        "depositpaid": true,
+                        "bookingdates" : {
+                            "checkin" : "2027-01-01",
+                            "checkout" : "2028-01-01"
+                          },
+                        "additionalneeds": "Breakfast"
+                        }
+                        """);
+    }
+
+    public RequestSpecification bodyForFakePost() {
+        return given()
+                .spec(info.getBookingSpec())
+                .body("""
+                        {
                         "lastname": "QA",
                         "totalprice": 100,
                         "depositpaid": true,
@@ -123,5 +154,49 @@ public class ApiHelp {
                         """)
                 .when()
                 .post("/posts");
+    }
+
+    public Booking createBooking() {
+        BookingDates testDates = new BookingDates("2026-11-10", "2026-11-15");
+
+        return new Booking(
+                "Nikita",
+                "Test",
+                150,
+                true,
+                testDates,
+                "Breakfast"
+        );
+    }
+
+    public Booking uptadedBooking() {
+        BookingDates updatedDates = new BookingDates("2026-12-01", "2026-12-05");
+
+        return new Booking(
+                "Updated",
+                "User",
+                250,
+                false,
+                updatedDates,
+                "Dinner"
+        );
+    }
+
+    public Booking universalBooking(
+            String firstname,
+            String lastname,
+            int totalprice,
+            boolean depositpaid,
+            BookingDates dates,
+            String additionalneeds
+    ) {
+        return new Booking(
+                firstname,
+                lastname,
+                totalprice,
+                depositpaid,
+                dates,
+                additionalneeds
+        );
     }
 }

@@ -26,4 +26,5 @@ public class BookingDates {
     public void setCheckout(String checkout) {
         this.checkout = checkout;
     }
+
 }
