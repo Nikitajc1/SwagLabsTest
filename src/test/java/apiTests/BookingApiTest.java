@@ -2,6 +2,7 @@ package apiTests;
 
 import apiHelpers.ApiHelp;
 import apiHelpers.InfoApi;
+import apiHelpers.InfoResponse;
 import models.Booking;
 import models.BookingDates;
 import models.BookingResponse;
@@ -20,6 +21,7 @@ public class BookingApiTest {
     private final ApiHelp help = new ApiHelp();
     private String token;
     private Integer bookingID;
+    private final InfoResponse infoResponse = new InfoResponse();
 
     @BeforeEach
     void setUp() {
@@ -43,10 +45,12 @@ public class BookingApiTest {
     void getBookingById() {
 
         given()
+                .log().all()
                 .spec(info.getBookingSpec())
                 .when().get("/booking/" + bookingID)
                 .then()
-                .statusCode(200)
+                .log().body()
+                .spec(infoResponse.getDefaultResponseSpec())
                 .body(matchesJsonSchemaInClasspath("schemas/booking-schema.json"))
                 .body("firstname", equalTo("Nikita"));
     }
