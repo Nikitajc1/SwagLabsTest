@@ -291,5 +291,43 @@ public class Site {
 
         Assertions.assertEquals(info.getBackpackName(), cart.getItemName());
     }
+
+    @Test
+    void openBurgerMenu() {
+        login.successLoginUser();
+        inventory.openingBurgerMenu();
+
+        assertTrue(inventory.burgerMenuWrap().isDisplayed());
+    }
+
+    @Test
+    void checkIfSliderPageIsOpened() {
+        login.successLoginUser();
+        inventory.openingBurgerMenu();
+        inventory.waitForClickable(inventory.getDynamicSidebar());
+        inventory.openDynamicSidebar();
+        inventory.openSliderMenu();
+
+        assertTrue(inventory.isSliderPageOpened());
+    }
+
+    @Test
+    void checkDots() {
+        login.successLoginUser();
+        inventory.openingBurgerMenu();
+        inventory.waitForClickable(inventory.getDynamicSidebar());
+        inventory.openDynamicSidebar();
+        inventory.openSliderMenu();
+        inventory.waitForVisibility(inventory.getDots());
+
+        List<WebElement> dots = inventory.dots();
+        WebElement dot = dots.get(4);
+        dot.click();
+
+        assertAll(
+                () -> assertEquals(info.getColorOfActiveDot(), dot.getCssValue("background-color")),
+                () -> assertEquals("true", dot.getAttribute("aria-current").toString())
+        );
+    }
 }
 

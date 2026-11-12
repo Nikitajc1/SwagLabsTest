@@ -37,6 +37,14 @@ public class Info {
     private final String numberOfItems = "//div[@class='cart_item']";
     private final Double priceOfBackpack = 29.99;
     private final String shirtName = "Sauce Labs Bolt T-Shirt";
+    private final String sliderDot = "dynamic_catalog_slider_dot";
+    private final String burgerMenuButton = "react-burger-menu-btn";
+    private final String burgerMenu = "bm-menu-wrap";
+    private final String sliderLinkInMenu = "dynamic_catalog_slider_link";
+    private final String dynamicSliderUri = "dynamic-catalog-slider";
+    private final String dynamicSidebar = "dynamic_catalog_sidebar_link";
+    private final String dynamicDotsXpath = "//div[@class='dynamic_catalog_slider_dots']//button";
+    private final String colorOfActiveDot = "rgba(61, 220, 145, 1)";
 
     public String getSite() {
         return siteName;
@@ -122,5 +130,37 @@ public class Info {
 
     public String getShirtName() {
         return shirtName;
+    }
+
+    public String getSliderDot() {
+        return sliderDot;
+    }
+
+    public String getBurgerMenuButton() {
+        return burgerMenuButton;
+    }
+
+    public String getBurgerMenu() {
+        return burgerMenu;
+    }
+
+    public String getSliderLinkInMenu() {
+        return sliderLinkInMenu;
+    }
+
+    public String getDynamicSliderUri() {
+        return dynamicSliderUri;
+    }
+
+    public String getDynamicSidebar() {
+        return dynamicSidebar;
+    }
+
+    public String getDynamicDotsXpath() {
+        return dynamicDotsXpath;
+    }
+
+    public String getColorOfActiveDot() {
+        return colorOfActiveDot;
     }
 }

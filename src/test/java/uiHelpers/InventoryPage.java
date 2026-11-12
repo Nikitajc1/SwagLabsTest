@@ -159,4 +159,48 @@ public class InventoryPage {
                 driver.getCurrentUrl().contains(info.getInventoryURL());
     }
 
+    public By openBMButton() {
+        return By.id(info.getBurgerMenuButton());
+    }
+
+    public void openingBurgerMenu() {
+        driver.findElement(openBMButton()).click();
+    }
+
+    public By getBurgerMenuWrap() {
+        return By.className(info.getBurgerMenu());
+    }
+
+    public WebElement burgerMenuWrap() {
+        return driver.findElement(getBurgerMenuWrap());
+    }
+
+    public By getDynamicSidebar() {
+        return By.id(info.getDynamicSidebar());
+    }
+
+    public void openDynamicSidebar() {
+        driver.findElement(getDynamicSidebar()).click();
+    }
+
+    public By getSliderLinkButton() {
+        return By.id(info.getSliderLinkInMenu());
+    }
+
+    public void openSliderMenu() {
+        driver.findElement(getSliderLinkButton()).click();
+    }
+
+    public boolean isSliderPageOpened() {
+        return driver.getCurrentUrl().contains(info.getDynamicSliderUri());
+    }
+
+    public By getDots() {
+        return By.xpath(info.getDynamicDotsXpath());
+    }
+
+    public List<WebElement> dots() {
+        return driver.findElements(getDots());
+    }
+
 }
