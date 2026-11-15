@@ -55,7 +55,7 @@ jobs:
 
       - name: Initialize user database
         run: |
-          docker exec "${{ job.services.userdb.id }}" \
+          docker exec -i "${{ job.services.userdb.id }}" \
             psql -U nikita -d qa_shop \
             -f - < .github/db-init/qa_shop.sql
 
