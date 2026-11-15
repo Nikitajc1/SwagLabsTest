@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: qa-postgres-compose
+    environment:
+      POSTGRES_USER: qa_user
+      POSTGRES_PASSWORD: qa_pass
+      POSTGRES_DB: qa_shop_compose
+    ports:
+      - "5434:5432"
+    volumes:
+      - qa-compose-data:/var/lib/postgresql/data
+
+volumes:
+  qa-compose-data:

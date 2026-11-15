@@ -1,0 +1,63 @@
+
+name: SwagLabs CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    services:
+      userdb:
+        image: postgres:17
+        env:
+          POSTGRES_USER: nikita
+          POSTGRES_DB: qa_shop
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U nikita -d qa_shop"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      composedb:
+        image: postgres:17
+        env:
+          POSTGRES_USER: qa_user
+          POSTGRES_PASSWORD: qa_pass
+          POSTGRES_DB: qa_shop_compose
+        ports:
+          - 5434:5432
+        options: >-
+          --health-cmd "pg_isready -U qa_user -d qa_shop_compose"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Java
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '27'
+          cache: maven
+
+      - name: Initialize user database
+        run: |
+          docker exec "${{ job.services.userdb.id }}" \
+            psql -U nikita -d qa_shop \
+            -f - < .github/db-init/qa_shop.sql
+
+      - name: Run tests
+        run: mvn -B -Dheadless=true clean test

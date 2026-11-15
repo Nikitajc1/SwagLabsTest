@@ -1,5 +1,9 @@
 package uiTests;
+import io.qameta.allure.AttachmentOptions;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Story;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.openqa.selenium.WebDriver;
@@ -13,7 +17,14 @@ import java.util.Comparator;
 import java.util.List;
 import uiHelpers.InventoryPage.*;
 import uiHelpers.*;
+import io.qameta.allure.Allure;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 
+import java.io.ByteArrayInputStream;
+
+@ExtendWith(ScreenshotExtension.class)
+@Epic("UI Tests")
 public class Site {
 
     private final Info info = new Info();
@@ -27,6 +38,7 @@ public class Site {
     @BeforeEach
     public void setUp() {
         driver = settings.setDriver();
+        DriverHolder.setDriver(driver);
 
         login = new LoginPage(driver);
         inventory = new InventoryPage(driver);
@@ -35,19 +47,25 @@ public class Site {
 
     @AfterEach
     public void tearDown() {
-        if (driver != null) {
-            driver.quit();
+        try {
+            if (driver != null) {
+                driver.quit();
+            }
+        } finally {
+            DriverHolder.removeDriver();
         }
     }
 
     @Test
+    @Story("Success login")
     public void login() {
 
-            login.successLoginUser();
+        login.successLoginUser();
 
-            assertTrue(
-                    inventory.isInventoryPageOpened()
-            );
+        assertTrue(
+                inventory.isInventoryPageOpened()
+        );
+
         }
 
 

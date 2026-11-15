@@ -2,6 +2,9 @@ package dbHelpers;
 
 public class InfoDB {
     private final String url = "jdbc:postgresql://localhost:5432/qa_shop";
+    private final String url2 = "jdbc:postgresql://localhost:5434/qa_shop_compose";
+    private final String username2 = "qa_user";
+    private final String password2 = "qa_pass";
     private final String username = "nikita";
     private final String password = "";
     private final String sqlSelectUserById = "SELECT * FROM users WHERE id = ?";
@@ -35,5 +38,17 @@ public class InfoDB {
 
     public String getSqlUpdateAgeOfUser() {
         return sqlUpdateAgeOfUser;
+    }
+
+    public String getUrl2() {
+        return url2;
+    }
+
+    public String getUsername2() {
+        return username2;
+    }
+
+    public String getPassword2() {
+        return password2;
     }
 }

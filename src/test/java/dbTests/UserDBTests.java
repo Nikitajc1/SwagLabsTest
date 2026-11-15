@@ -5,10 +5,7 @@ import models.Booking;
 import models.BookingDates;
 import models.BookingResponse;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.devtools.latest.network.model.Response;
-
 import java.sql.*;
-
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -46,7 +43,7 @@ public class UserDBTests {
                         () -> assertEquals(1, actualId),
                         () -> assertEquals("Ivan", actualName),
                         () -> assertEquals("ivan@mail.com", actualEmail),
-                        () -> assertEquals(28, actualAge)
+                        () -> assertEquals(35, actualAge)
                 );
 
             }

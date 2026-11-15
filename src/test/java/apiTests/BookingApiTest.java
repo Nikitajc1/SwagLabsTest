@@ -3,19 +3,23 @@ package apiTests;
 import apiHelpers.ApiHelp;
 import apiHelpers.InfoApi;
 import apiHelpers.InfoResponse;
+import io.qameta.allure.*;
+import io.restassured.response.Response;
 import models.Booking;
 import models.BookingDates;
 import models.BookingResponse;
 import models.BookingResponseData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 
+@Epic("Booking API testing")
+@Feature("Booking API")
 public class BookingApiTest {
     private final InfoApi info = new InfoApi();
     private final ApiHelp help = new ApiHelp();
@@ -42,9 +46,10 @@ public class BookingApiTest {
     }
 
     @Test
+    @Story("Get id of created booking")
     void getBookingById() {
 
-        given()
+        String response = given()
                 .log().all()
                 .spec(info.getBookingSpec())
                 .when().get("/booking/" + bookingID)
@@ -52,10 +57,19 @@ public class BookingApiTest {
                 .log().body()
                 .spec(infoResponse.getDefaultResponseSpec())
                 .body(matchesJsonSchemaInClasspath("schemas/booking-schema.json"))
-                .body("firstname", equalTo("Nikita"));
+                .body("firstname", equalTo("Nikita"))
+                .extract().response().asPrettyString();
+
+        Allure.attachment(
+                "Booking response",
+                "application/json",
+                response,
+                AttachmentOptions.withFileExtension(".json")
+        );
     }
 
     @Test
+    @Story("Do 'PUT' in created booking. Change firstname and lastname")
     void putBooking() {
 
         help.bodyForPut()
@@ -82,6 +96,7 @@ public class BookingApiTest {
     }
 
     @Test
+    @Story("Test of deleting of created booking")
     void deleteBooking() {
         int deletedID = bookingID;
 
@@ -103,22 +118,31 @@ public class BookingApiTest {
     }
 
     @Test
+    @DisplayName("Удаление бронирования без авторизации")
+    @Description("Проверяем, что API запрещает удаление бронирования без токена авторизации")
+    @Story("Check if user can delete without auth")
     void deleteWithoutAuth() {
 
-        given()
-                .spec(info.getBookingSpec())
-                .when().delete("/booking/" + bookingID)
-                .then()
-                .statusCode(403);
-
-        given()
-                .spec(info.getBookingSpec())
-                .when().get("/booking/" + bookingID)
-                .then()
-                .statusCode(200);
+        Allure.step("Попытка удаления без авторизации. Проверка кода 403",
+                () -> {
+                    given()
+                            .spec(info.getBookingSpec())
+                            .when().delete("/booking/" + bookingID)
+                            .then()
+                            .statusCode(403);
+                });
+        Allure.step("Проверка, что удаление без авторизации не затронуло объект",
+                () -> {
+                    given()
+                            .spec(info.getBookingSpec())
+                            .when().get("/booking/" + bookingID)
+                            .then()
+                            .statusCode(200);
+                });
     }
 
     @Test
+    @Story("Create new booking throw java POJO")
     void createBookingWithPojo() {
         BookingDates testDates = new BookingDates("2026-11-10", "2026-11-15");
         Booking testObject = new Booking(
@@ -140,6 +164,7 @@ public class BookingApiTest {
     }
 
     @Test
+    @Story("Deserialize of created by POJO booking")
     void createAndDeserializeBooking() {
         Booking testObject = help.createBooking();
 
@@ -171,6 +196,7 @@ public class BookingApiTest {
     }
 
     @Test
+    @Story("Checking 'PUT' on POJO booking")
     void putBookingWithPojo() {
         Booking testObject = help.createBooking();
 
