@@ -25,12 +25,13 @@ public class ReadmeUpdater {
 
             String before = readme.substring(0, start + startMarker.length());
 
-            String newContent =
-                    "\nTotal: " + results.getTotal() +
-                            "\nPassed: " + results.getPassed() +
-                            "\nFailed: " + results.getFailed() +
-                            "\nSkipped: " + results.getSkipped() +
-                            "\n";
+        String newContent =
+                "\n| Показатель | Количество |\n" +
+                        "|---|---:|\n" +
+                        "| Всего тестов | " + results.getTotal() + " |\n" +
+                        "| Успешно | " + results.getPassed() + " |\n" +
+                        "| Ошибки | " + results.getFailed() + " |\n" +
+                        "| Пропущено | " + results.getSkipped() + " |\n";
 
             String after = readme.substring(end);
 

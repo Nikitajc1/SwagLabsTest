@@ -1,8 +1,10 @@
 ## Test Results
 
 <!-- TEST-RESULTS:START -->
-Total: 24
-Passed: 24
-Failed: 0
-Skipped: 0
+| Показатель | Количество |
+|---|---:|
+| Всего тестов | 24 |
+| Успешно | 24 |
+| Ошибки | 0 |
+| Пропущено | 0 |
 <!-- TEST-RESULTS:END -->
