@@ -1,23 +1,26 @@
 package dbHelpers;
 
+import configs.ConfigReader;
+
 public class InfoDB {
-    private final String url = "jdbc:postgresql://localhost:5432/qa_shop";
-    private final String url2 = "jdbc:postgresql://localhost:5434/qa_shop_compose";
-    private final String username2 = "qa_user";
     private final String password2 = "qa_pass";
-    private final String username = "nikita";
     private final String password = "";
     private final String sqlSelectUserById = "SELECT * FROM users WHERE id = ?";
     private final String sqlCreateUser = "INSERT INTO users (name, email, age) VALUES (?, ?, ?)";
     private final String sqlDeleteUser = "DELETE FROM users WHERE id = ?";
     private final String sqlUpdateAgeOfUser = "UPDATE users SET age = ? WHERE id = ?";
+    private final ConfigReader config;
 
-    public String getUrl() {
-        return url;
+    public InfoDB() {
+        config = new ConfigReader();
     }
 
-    public String getUsername() {
-        return username;
+    public String getLocalUrl() {
+        return config.getProperty("db.local.url");
+    }
+
+    public String getLocalUsername() {
+        return config.getProperty("db.local.username");
     }
 
     public String getPassword() {
@@ -40,12 +43,12 @@ public class InfoDB {
         return sqlUpdateAgeOfUser;
     }
 
-    public String getUrl2() {
-        return url2;
+    public String getDockerUrl() {
+        return config.getProperty("db.docker.url");
     }
 
-    public String getUsername2() {
-        return username2;
+    public String getDockerUsername() {
+        return config.getProperty("db.docker.username");
     }
 
     public String getPassword2() {

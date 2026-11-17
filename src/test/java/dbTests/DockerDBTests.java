@@ -1,6 +1,5 @@
 package dbTests;
 
-import apiHelpers.InfoApi;
 import dbHelpers.InfoDB;
 import org.junit.jupiter.api.Test;
 
@@ -11,8 +10,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DockerDBTests {
     InfoDB info = new InfoDB();
-    private final String url = info.getUrl2();
-    private final String username = info.getUsername2();
+    private final String url = info.getDockerUrl();
+    private final String username = info.getDockerUsername();
     private final String password = info.getPassword2();
     private final String sqlFindUserById = info.getSqlSelectUserById();
     private final String sqlCreateUser = info.getSqlCreateUser();

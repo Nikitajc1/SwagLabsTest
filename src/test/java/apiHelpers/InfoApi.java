@@ -1,9 +1,9 @@
 package apiHelpers;
 
+import configs.ConfigReader;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.http.ContentType;
-import java.io.IOException;
 
 public class InfoApi {
 

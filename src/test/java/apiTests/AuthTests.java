@@ -1,6 +1,6 @@
 package apiTests;
 
-import apiHelpers.ConfigReader;
+import configs.ConfigReader;
 import apiHelpers.InfoApi;
 import org.junit.jupiter.api.Test;
 

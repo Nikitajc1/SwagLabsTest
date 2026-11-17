@@ -12,8 +12,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class UserDBTests {
     InfoDB info = new InfoDB();
     InfoApi infoApi = new InfoApi();
-    private final String url = info.getUrl();
-    private final String username = info.getUsername();
+    private final String url = info.getLocalUrl();
+    private final String username = info.getLocalUsername();
     private final String password = info.getPassword();
     private final String sqlFindUserById = info.getSqlSelectUserById();
     private final String sqlCreateUser = info.getSqlCreateUser();
