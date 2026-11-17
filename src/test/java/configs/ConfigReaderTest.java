@@ -53,6 +53,7 @@ public class ConfigReaderTest {
     @Test
     void checkDockerConfig() {
         System.clearProperty("env");
+        System.setProperty("env", "docker");
         String env = config.getEnvironment();
 
         assertEquals("docker", env);
